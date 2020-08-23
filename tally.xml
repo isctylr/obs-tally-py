@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<data>
+	<host>192.168.1.61</host> <!-- OBS Websocket Host -->
+	<port>4444</port> <!-- OBS Websocket Port -->
+	<pass/> <!-- OBS Websocket Password -->
+	<camera>Color Source</camera><!-- OBS Camera Name to light -->
+  <p_red>22</p_red> <!-- Red LED pin -->
+	<p_green>23</p_green> <!-- Green LED pin -->
+	<p_blue>24</p_blue> <!-- Blue LED pin -->
+</data>
