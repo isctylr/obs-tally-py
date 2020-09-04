@@ -25,12 +25,12 @@ import socket
 import websockets
 import xml.etree.ElementTree as ET
 
-# from gpiozero import LED
+from gpiozero import LED
 
-# import RPi.GPIO as GPIO
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setwarnings(False)
-# GPIO.cleanup()
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.cleanup()
 
 logger = logging.getLogger(__name__)
 
@@ -62,16 +62,17 @@ class OBSTally():
     #
     # Configure Tallys
     #
-    # self.p_red = LED(self.root[4].text)
-    # self.p_green = LED(self.root[5].text)
-    # self.p_blue = LED(self.root[6].text)
+    self.p_red = LED(self.root[4].text)
+    self.p_green = LED(self.root[5].text)
+    self.p_blue = LED(self.root[6].text)
 
-    # #
-    # # Init LEDs
-    # #
-    # self.p_red.on()
-    # self.p_green.on()
-    # self.p_blue.on()
+    #
+    # Init LEDs
+    #
+
+    self.p_red.off()
+    self.p_green.off()
+    self.p_blue.off()
 
     #
     # State
@@ -152,7 +153,7 @@ class OBSTally():
       if src['name'] == self.camera_name and src['render']:
         self.switch_state("Program")
         return True
-    
+
     if self.camera_state == "Program":
       # The camera was switched out, so its always moved to preview
       self.switch_state("Preview")
@@ -164,27 +165,27 @@ class OBSTally():
     if state == "Off":
       self.camera_state = "Off"
       logger.info("Camera off")
-      # p_green.off()
-      # p_red.off()
-      # p_blue.off()
+      self.p_green.on()
+      self.p_red.on()
+      self.p_blue.on()
     elif state == "Preview":
       self.camera_state = "Preview"
       logger.info("Camera in Preview")
-      # p_green.on()
-      # p_red.on()
-      # p_blue.off()
+      self.p_green.off()
+      self.p_red.off()
+      self.p_blue.on()
     elif state == "Program":
       self.camera_state = "Program"
       logger.info("Camera in Program")
-      # p_green.on()
-      # p_red.off()
-      # p_blue.off()
+      self.p_green.off()
+      self.p_red.on()
+      self.p_blue.on()
     elif state == "Disconnected":
       self.camera_state = "Disconnected"
       logger.info("Camera Disconnected")
-      # p_green.off()
-      # p_red.off()
-      # p_blue.on()
+      self.p_green.off()
+      self.p_red.on()
+      self.p_blue.off()
 
   async def listen_forever(self):
     while True:
@@ -207,7 +208,7 @@ class OBSTally():
               except:
                 self.on_disconnect()
                 logger.debug(
-                  'Ping error - retrying connection in {} sec (Ctrl-C to quit)'.format(5))
+                  'Ping error - retrying connection in 5 sec (Ctrl-C to quit)')
                 await asyncio.sleep(5)
                 break
             # logger.debug('Server said > {}'.format(reply))
@@ -215,13 +216,18 @@ class OBSTally():
       except socket.gaierror:
         self.on_disconnect()
         logger.debug(
-          'Socket error - retrying connection in {} sec (Ctrl-C to quit)'.format(5))
+          'Socket error - retrying connection in 5 sec (Ctrl-C to quit)')
+        await asyncio.sleep(5)
+        continue
+      except OSError:
+        self.on_disconnect()
+        logger.debug('OS Error - Retrying connection in 5 sec (Ctrl-C to quit)')
         await asyncio.sleep(5)
         continue
       except ConnectionRefusedError:
         self.on_disconnect()
         logger.debug('Nobody seems to listen to this endpoint. Please check the URL.')
-        logger.debug('Retrying connection in {} sec (Ctrl-C to quit)'.format(5))
+        logger.debug('Retrying connection in 5 sec (Ctrl-C to quit)')
         await asyncio.sleep(5)
         continue
       except ConnectionFailure:
@@ -229,6 +235,6 @@ class OBSTally():
         await asyncio.sleep(10000) # needs to stay running for watchgod to reload.
         continue
 
-def main():
-  obs_tally = OBSTally()
-  asyncio.run(obs_tally.listen_forever())
+#def main():
+obs_tally = OBSTally()
+asyncio.run(obs_tally.listen_forever())
