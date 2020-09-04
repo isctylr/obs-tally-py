@@ -140,7 +140,7 @@ $pBlue = $data->pBlue;
           program.
         </p>
         <label for="camera">Source Name:</label>
-        <input type="text" cols="20" name="camera" value="<?php echo $scene1; ?>" />
+        <input type="text" cols="20" name="camera" value="<?php echo $camera; ?>" />
         <br />
       </fieldset>
 
