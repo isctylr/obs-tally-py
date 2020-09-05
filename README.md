@@ -33,7 +33,7 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
     ```
     (
             cd [/path/to/obs-tally]
-            watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
+            watchgod obstally.main tally.xml &
     )
     ```
 
