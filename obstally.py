@@ -25,12 +25,12 @@ import socket
 import websockets
 import xml.etree.ElementTree as ET
 
-from gpiozero import LED
+# from gpiozero import LED
 
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.cleanup()
+# import RPi.GPIO as GPIO
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setwarnings(False)
+# GPIO.cleanup()
 
 logger = logging.getLogger(__name__)
 
@@ -62,17 +62,17 @@ class OBSTally():
     #
     # Configure Tallys
     #
-    self.p_red = LED(self.root[4].text)
-    self.p_green = LED(self.root[5].text)
-    self.p_blue = LED(self.root[6].text)
+    # self.p_red = LED(self.root[4].text)
+    # self.p_green = LED(self.root[5].text)
+    # self.p_blue = LED(self.root[6].text)
 
     #
     # Init LEDs
     #
 
-    self.p_red.off()
-    self.p_green.off()
-    self.p_blue.off()
+    # self.p_red.off()
+    # self.p_green.off()
+    # self.p_blue.off()
 
     #
     # State
@@ -165,27 +165,27 @@ class OBSTally():
     if state == "Off":
       self.camera_state = "Off"
       logger.info("Camera off")
-      self.p_green.on()
-      self.p_red.on()
-      self.p_blue.on()
+      # self.p_green.on()
+      # self.p_red.on()
+      # self.p_blue.on()
     elif state == "Preview":
       self.camera_state = "Preview"
       logger.info("Camera in Preview")
-      self.p_green.off()
-      self.p_red.off()
-      self.p_blue.on()
+      # self.p_green.off()
+      # self.p_red.off()
+      # self.p_blue.on()
     elif state == "Program":
       self.camera_state = "Program"
       logger.info("Camera in Program")
-      self.p_green.off()
-      self.p_red.on()
-      self.p_blue.on()
+      # self.p_green.off()
+      # self.p_red.on()
+      # self.p_blue.on()
     elif state == "Disconnected":
       self.camera_state = "Disconnected"
       logger.info("Camera Disconnected")
-      self.p_green.off()
-      self.p_red.on()
-      self.p_blue.off()
+      # self.p_green.off()
+      # self.p_red.on()
+      # self.p_blue.off()
 
   async def listen_forever(self):
     while True:
@@ -235,6 +235,6 @@ class OBSTally():
         await asyncio.sleep(10000) # needs to stay running for watchgod to reload.
         continue
 
-#def main():
-obs_tally = OBSTally()
-asyncio.run(obs_tally.listen_forever())
+def main():
+  obs_tally = OBSTally()
+  asyncio.run(obs_tally.listen_forever())

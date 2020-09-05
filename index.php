@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 //Set your tally.xml-Location
 
-$Tally_Config = '/opt/OBSTally/tally.xml';
+$Tally_Config = '/opt/obs-tally-py/tally.xml';
 
 
 /* You dont need to change anything below here */
@@ -34,9 +34,9 @@ if(isset($_POST['save']))
     
   $data->camera = $_POST['camera'];
     
-	$data->pRed = $_POST['pRed'];
-	$data->pGreen = $_POST['pGreen'];
-	$data->pBlue = $_POST['pBlue'];
+	$data->p_red = $_POST['pRed'];
+	$data->p_green = $_POST['pGreen'];
+	$data->p_blue = $_POST['pBlue'];
     
 	$handle = fopen($Tally_Config, "wb");
 	fwrite($handle, $data->asXML());
@@ -50,9 +50,9 @@ $pass = $data->pass;
 
 $camera = $data->camera;
 
-$pRed = $data->pRed;
-$pGreen = $data->pGreen;
-$pBlue = $data->pBlue;
+$pRed = $data->p_red;
+$pGreen = $data->p_green;
+$pBlue = $data->p_blue;
 
 ?>
 <html>

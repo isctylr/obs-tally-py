@@ -4,8 +4,9 @@ Each pi will sit and look for a websocket connection. Once connected,
 it will light yellow when the provided source is in preview and green when its in program
 
 ### Installation
-1. Install the watchgod library, used to run the script
-    `pip install watchgod`
+1. Install the watchgod and websockets library as root, used to run the script
+    `sudo pip3 install watchgod`
+    `sudo pip3 install websockets`
 
 2. Install and Setup NGINX and PHP-Server 
 https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
@@ -14,7 +15,7 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
 
 3. Put index.php in /var/www/html/
 
-4. In index.php change tally.xml-path to match the actual path
+4. In index.php change tally.xml-path to match the actual path (and make sure nginx can write to it)
 
 5. Run index.php from a browser
 
@@ -29,7 +30,10 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
     * `sudo update-rc.d -f nginx defaults;`
     * `sudo nano /etc/rc.local`
     * just above line 'exit 0' insert:
-    * `watchgod [/path/to/]obs-tally.main [/path/to/]tally.xml &`
+    * `(
+            cd [/path/to/obs-tally]
+            watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
+       )`
 
 
 ### Hardware
