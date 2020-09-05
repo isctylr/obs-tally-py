@@ -30,10 +30,14 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
     * `sudo update-rc.d -f nginx defaults;`
     * `sudo nano /etc/rc.local`
     * just above line 'exit 0' insert:
-    > (
-    >        cd [/path/to/obs-tally]
-    >        watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
-    > )
+    ```
+    (
+            cd [/path/to/obs-tally]
+            watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
+    )
+    ```
+
+*Note that for whatever reason, watchgod can't kill its subprocesses when started with rc.local if rpi boots only to the cli. Either always boot to the gui, or you could try using crontab to start the process instead.*
 
 
 ### Hardware
