@@ -30,10 +30,10 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
     * `sudo update-rc.d -f nginx defaults;`
     * `sudo nano /etc/rc.local`
     * just above line 'exit 0' insert:
-    * `(
-            cd [/path/to/obs-tally]
-            watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
-       )`
+    > (
+    >        cd [/path/to/obs-tally]
+    >        watchgod [/path/to/]obstally.main [/path/to/]tally.xml &
+    > )
 
 
 ### Hardware
