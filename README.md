@@ -8,7 +8,7 @@ it will light yellow when the provided source is in preview and green when its i
     `sudo pip3 install watchgod`
     `sudo pip3 install websockets`
 
-2. Install and Setup NGINX and PHP-Server 
+2. Install and Setup NGINX and PHP Server:
 https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
 
 (If using php 7, also install php-xml - `sudo apt install php-xml`)
@@ -54,3 +54,5 @@ Resistances:
 Red - 100 ohm  
 Green - 220 ohm  
 Blue - 150 ohm
+
+Loosely based on [OBSTally](https://github.com/denizkoekden/OBSTally/).
