@@ -24,6 +24,7 @@ import sys
 import socket
 import websockets
 import xml.etree.ElementTree as ET
+from watchgod import awatch
 
 from gpiozero import LED
 
@@ -48,6 +49,22 @@ class OBSTally():
 
   def __init__(self):
     self.ws = None
+    self.load_settings()
+
+    #
+    # Init LEDs
+    #
+
+    self.p_red.off()
+    self.p_green.off()
+    self.p_blue.off()
+
+    #
+    # State
+    #
+    self.camera_state = "Init"
+
+  def load_settings(self):
     self.tree = ET.parse('tally.xml')
     self.root = self.tree.getroot()
     self.host = self.root[0].text
@@ -65,19 +82,6 @@ class OBSTally():
     self.p_red = LED(self.root[4].text)
     self.p_green = LED(self.root[5].text)
     self.p_blue = LED(self.root[6].text)
-
-    #
-    # Init LEDs
-    #
-
-    self.p_red.off()
-    self.p_green.off()
-    self.p_blue.off()
-
-    #
-    # State
-    #
-    self.camera_state = "Init"
 
   async def on_connect(self):
     # authenticate with obs-websocket
@@ -188,15 +192,24 @@ class OBSTally():
       self.p_blue.off()
 
   async def listen_forever(self):
+    async for changes in awatch('./tally.xml'):
+      print(changes)
+      self.load_settings()
+
     while True:
-    # outer loop restarted every time the connection fails
-      logger.debug('Creating new connection...')
       try:
         async with websockets.connect('ws://{}:{}'.format(self.host, self.port)) as ws:
           self.ws = ws
           await self.on_connect()
           while True:
           # listener loop
+            # Check for watchgod proc kill and allow die
+            loop = asyncio.get_running_loop()
+            for signame in {'SIGINT', 'SIGTERM'}:
+              loop.add_signal_handler(
+                getattr(signal, signame),
+                functools.partial(ask_exit, signame, loop))
+
             try:
               reply = await asyncio.wait_for(ws.recv(), timeout=10)
             except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed):
@@ -235,6 +248,7 @@ class OBSTally():
         await asyncio.sleep(10000) # needs to stay running for watchgod to reload.
         continue
 
-def main():
-  obs_tally = OBSTally()
-  asyncio.run(obs_tally.listen_forever())
+#def main():
+ 
+obs_tally = OBSTally()
+asyncio.run(obs_tally.listen_forever())
