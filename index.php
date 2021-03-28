@@ -64,25 +64,30 @@ $pBlue = $data->p_blue;
     display: block;
     padding: 3px 0;
   }
+
   legend {
     font-size: 1.1rem;
     padding: 7px;
     font-weight: 700;
   }
+
   fieldset {
     border-radius: 15px;
     margin-bottom: 10px;
   }
+
   body {
     background-color: #0c3871;
     color: #FFF;
     font-family: Verdana, Geneva, sans-serif;
   }
+
   input[type="text"] {
     padding: 6px 10px;
     border-radius: 5px;
     border: 1px solid #555;
   }
+
   input[type="submit"] {
     margin: 10px;
     padding: 10px 20px;
@@ -94,11 +99,14 @@ $pBlue = $data->p_blue;
     font-variant: all-small-caps;
     font-weight: 700;
   }
-  input[type="submit"]:hover, input[type="submit"]:focus {
+
+  input[type="submit"]:hover,
+  input[type="submit"]:focus {
     background-color: #999;
     /* color: #999; */
     cursor: pointer;
   }
+
   button {
     background-color: inherit;
     border: inherit;
@@ -118,6 +126,7 @@ $pBlue = $data->p_blue;
       <div style='text-align:center;'>
         <noscript>To use OBSTally, please enable JavaScript<br /></noscript>
         <h1>OBS-Tally Config</h1>
+        <p>Make your changes and press save once. The changes may take a few minutes to have an effect.</p>
       </div>
       <fieldset>
         <legend>OBS-Websocket Credentials</legend>
@@ -145,7 +154,8 @@ $pBlue = $data->p_blue;
       </fieldset>
 
       <div style="padding: 10px 0;">
-        <button onClick="return showHide();">RPi i/o options</button><span id="down" style="color: #aaa;">v</span><span id="up" style="display:none; color: #aaa;">^</span><br />
+        <button onClick="return showHide();">RPi i/o options</button><span id="down" style="color: #aaa;">v</span><span
+          id="up" style="display:none; color: #aaa;">^</span><br />
       </div>
       <fieldset id="gpio" style="display:none;">
         <legend>Define LED GPIOs as PI-GPIO-Numbers (NOT Pin-Number)</legend>
@@ -182,4 +192,5 @@ function showHide() {
   return false;
 }
 </script>
+
 </html>

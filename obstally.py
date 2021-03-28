@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <https://www.gnu.org/licenses/>
 
-
+import os
 import asyncio
 import base64
 import hashlib
@@ -48,6 +48,26 @@ class OBSTally():
 
   def __init__(self):
     self.ws = None
+    self.edittime = self.get_edit_time()
+    self.load_settings()
+
+    #
+    # Init LEDs
+    #
+
+    self.p_red.off()
+    self.p_green.off()
+    self.p_blue.off()
+
+    #
+    # State
+    #
+    self.camera_state = "Init"
+
+  def get_edit_time(self):
+    return os.stat('tally.xml').st_mtime
+
+  def load_settings(self):
     self.tree = ET.parse('tally.xml')
     self.root = self.tree.getroot()
     self.host = self.root[0].text
@@ -62,22 +82,18 @@ class OBSTally():
     #
     # Configure Tallys
     #
+
+    # Released leds if reloading
+    if hasattr(self, 'p_red'):
+      del self.p_red
+    if hasattr(self, 'p_green'):
+      del self.p_green
+    if hasattr(self, 'p_blue'):
+      del self.p_blue
+
     self.p_red = LED(self.root[4].text)
     self.p_green = LED(self.root[5].text)
     self.p_blue = LED(self.root[6].text)
-
-    #
-    # Init LEDs
-    #
-
-    self.p_red.off()
-    self.p_green.off()
-    self.p_blue.off()
-
-    #
-    # State
-    #
-    self.camera_state = "Init"
 
   async def on_connect(self):
     # authenticate with obs-websocket
@@ -115,8 +131,13 @@ class OBSTally():
     requestpayload = {'message-id':'3', 'request-type':'GetPreviewScene'}
     await self.ws.send(json.dumps(requestpayload))
     result = json.loads(await self.ws.recv())
-    prevs = result['sources']
+    try:
+      prevs = result['sources']
+    except KeyError:
+      prevs = []
+      print("OBS not in studio mode")
     self.on_preview_changed(prevs)
+
 
   def on_disconnect(self):
     self.switch_state("Disconnected")
@@ -189,14 +210,27 @@ class OBSTally():
 
   async def listen_forever(self):
     while True:
-    # outer loop restarted every time the connection fails
-      logger.debug('Creating new connection...')
+      checktime = self.get_edit_time()
+      if self.edittime != checktime:
+        self.edittime = checktime
+        logger.info("Settings changed, reloading.")
+        self.load_settings()
+        continue
+
       try:
         async with websockets.connect('ws://{}:{}'.format(self.host, self.port)) as ws:
           self.ws = ws
           await self.on_connect()
           while True:
           # listener loop
+            # check for file edits
+            checktime = self.get_edit_time()
+            if self.edittime != checktime:
+              self.edittime = checktime
+              logger.info("Settings changed, reloading.")
+              self.load_settings()
+              break
+
             try:
               reply = await asyncio.wait_for(ws.recv(), timeout=10)
             except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed):
@@ -232,9 +266,8 @@ class OBSTally():
         continue
       except ConnectionFailure:
         logger.error('Incorrect password provided for OBS-WebSocket!')
-        await asyncio.sleep(10000) # needs to stay running for watchgod to reload.
+        await asyncio.sleep(100)
         continue
 
-def main():
-  obs_tally = OBSTally()
-  asyncio.run(obs_tally.listen_forever())
+obs_tally = OBSTally()
+asyncio.run(obs_tally.listen_forever())
