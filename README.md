@@ -1,15 +1,16 @@
 # OBS-Tally-py
+
 Tally light for OBS source using rpi, rgb leds, and obs-websocket
-Each pi will sit and look for a websocket connection. Once connected, 
+Each pi will sit and look for a websocket connection. Once connected,
 it will light yellow when the provided source is in preview and green when its in program
 
 ### Installation
+
 1. Install the watchgod and websockets library as root, used to run the script
-    `sudo pip3 install watchgod`
-    `sudo pip3 install websockets`
+   `sudo pip3 install websockets`
 
 2. Install and Setup NGINX and PHP Server:
-https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
+   https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
 
 (If using php 7, also install php-xml - `sudo apt install php-xml`)
 
@@ -27,25 +28,24 @@ https://www.raspberrypi.org/documentation/remote-access/web-server/nginx.md
 
 9. Start this script and nginx on boot:
 
-    * `sudo update-rc.d -f nginx defaults;`
-    * `sudo nano /etc/rc.local`
-    * just above line 'exit 0' insert:
-    ```
-    (
-            cd [/path/to/obs-tally]
-            watchgod obstally.main tally.xml &
-    )
-    ```
+   - `sudo update-rc.d -f nginx defaults;`
+   - `sudo nano /etc/rc.local`
+   - just above line 'exit 0' insert:
 
-*Note that for whatever reason, watchgod can't kill its subprocesses when started with rc.local if rpi boots only to the cli. Either always boot to the gui, or you could try using crontab to start the process instead.*
-
+   ```
+   (
+           cd [/path/to/obs-tally]
+           python3 obstally.py &
+   )
+   ```
 
 ### Hardware
+
 Follow the connection diagram below with a raspberry pi zero w:
 [Adafruit](https://www.adafruit.com/product/3400)
 
 and an rgb led:
-[Adafruit](https://www.adafruit.com/product/848), 
+[Adafruit](https://www.adafruit.com/product/848),
 [Amazon US](https://www.amazon.com/gp/product/B0194Y6MW2/)
 
 ![Connection Diagram](docs/diagram.png)
